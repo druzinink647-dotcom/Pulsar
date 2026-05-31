@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Покупка мода</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .plan-screen {
+            display: block;
+        }
+
+        .plan-screen.hide {
+            display: none;
+        }
+
+        .payment-screen {
+            display: none;
+        }
+
+        .payment-screen.active {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a0a8c0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #8e98b3;
+            font-size: 14px;
+        }
+
+        .pricing-card {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.2s ease, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .pricing-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-week {
+            border-left: 4px solid #3b82f6;
+        }
+        .card-month {
+            border-left: 4px solid #8b5cf6;
+        }
+        .card-forever {
+            border-left: 4px solid #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(18, 25, 45, 0.7));
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .plan-price {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .plan-desc {
+            color: #b4bedb;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .buy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            margin-top: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .card-week .buy-btn {
+            background: #3b82f6;
+        }
+        .card-month .buy-btn {
+            background: #8b5cf6;
+        }
+        .card-forever .buy-btn {
+            background: #f59e0b;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .buy-btn:active {
+            opacity: 0.8;
+            transform: scale(0.97);
+        }
+
+        .help-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 12px;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #8e98b3;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .help-button:active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #3b82f6;
+            font-size: 16px;
+            padding: 12px 0;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: left;
+            border-radius: 12px;
+            padding-left: 12px;
+        }
+
+        .amount-box {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .amount-label {
+            color: #8e98b3;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .amount-value {
+            font-size: 44px;
+            font-weight: 800;
+            color: #f59e0b;
+        }
+
+        .card-details {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-number {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin: 12px 0;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            background: #3b82f6;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .copy-btn:active {
+            opacity: 0.8;
+        }
+
+        .promo-block {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .promo-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .promo-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .instruction {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .instruction ol {
+            margin-left: 20px;
+            margin-top: 12px;
+            color: #b4bedb;
+            line-height: 1.6;
+        }
+
+        .pay-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .pay-btn:active {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            background: #1e293b;
+            border-radius: 60px;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #fff;
+            transition: opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Экран выбора тарифа -->
+    <div id="planScreen" class="plan-screen">
+        <div class="header">
+            <h1>⚡ PULSE MOD</h1>
+            <p>Выберите подписку на мод</p>
+        </div>
+
+        <div class="pricing-card card-week" data-plan="week" data-price="199">
+            <div class="card-header">
+                <span class="plan-name">🔹 Неделя</span>
+                <span class="plan-price">199 ₽</span>
+            </div>
+            <div class="plan-desc">Полный доступ на 7 дней • Все функции</div>
+            <button class="buy-btn">Купить за 199 ₽</button>
+        </div>
+
+        <div class="pricing-card card-month" data-plan="month" data-price="499">
+            <div class="card-header">
+                <span class="plan-name">🔸 Месяц</span>
+                <span class="plan-price">499 ₽</span>
+            </div>
+            <div class="plan-desc">30 дней доступа • Экономия 15%</div>
+            <button class="buy-btn">Купить за 499 ₽</button>
+        </div>
+
+        <div class="pricing-card card-forever" data-plan="forever" data-price="999">
+            <div class="card-header">
+                <span class="plan-name">💎 Навсегда</span>
+                <span class="plan-price">999 ₽</span>
+            </div>
+            <div class="plan-desc">Пожизненный доступ • Все обновления</div>
+            <button class="buy-btn">Купить за 999 ₽</button>
+        </div>
+
+        <div class="help-button" id="helpBtn">
+            ❓ Помощь / Как оплатить
+        </div>
+    </div>
+
+    <!-- Экран оплаты -->
+    <div id="paymentScreen" class="payment-screen">
+        <button class="back-btn" id="backBtn">← Назад к тарифам</button>
+
+        <div class="amount-box">
+            <div class="amount-label">Сумма к оплате</div>
+            <div class="amount-value" id="amountValue">0 ₽</div>
+        </div>
+
+        <div class="card-details">
+            <div style="font-weight: 600; margin-bottom: 5px;">💳 Карта Тинькофф</div>
+            <div class="card-number" id="cardNumber">2200 7019 7610 2084</div>
+            <button class="copy-btn" id="copyCardBtn">📋 Скопировать номер карты</button>
+        </div>
+
+        <div class="promo-block">
+            <div style="font-weight: 500;">🎟 Промокод (если есть)</div>
+            <input type="text" class="promo-input" id="promoInput" placeholder="Введите промокод">
+        </div>
+
+        <div class="instruction">
+            <div style="font-weight: 600;">📌 Простая инструкция</div>
+            <ol>
+                <li>Скопируйте номер карты выше</li>
+                <li>Переведите <span id="instructionAmount">199</span> ₽ в своём банке</li>
+                <li>Нажмите "Я оплатил" и пришлите скрин оплаты</li>
+            </ol>
+        </div>
+
+        <button class="pay-btn" id="payBtn">✅ Я оплатил</button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    let currentPlan = '';
+    let currentPrice = 0;
+
+    function showMessage(text, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.textContent = text;
+        toast.style.background = isError ? '#b91c1c' : '#1e293b';
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    let tg = null;
+    if (window.Telegram && window.Telegram.WebApp) {
+        tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.MainButton.hide();
+        tg.BackButton.hide();
+    }
+
+    function showPaymentScreen(plan, price) {
+        currentPlan = plan;
+        currentPrice = price;
+
+        document.getElementById('planScreen').classList.add('hide');
+        document.getElementById('paymentScreen').classList.add('active');
+
+        document.getElementById('amountValue').innerHTML = price + ' ₽';
+        document.getElementById('instructionAmount').innerText = price;
+    }
+
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('.pricing-card');
+            const plan = card.getAttribute('data-plan');
+            const price = parseInt(card.getAttribute('data-price'));
+            showPaymentScreen(plan, price);
+        });
+    });
+
+    document.querySelectorAll('.pricing-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.classList.contains('buy-btn')) return;
+            const btn = card.querySelector('.buy-btn');
+            if (btn) btn.click();
+        });
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+        document.getElementById('planScreen').classList.remove('hide');
+        document.getElementById('paymentScreen').classList.remove('active');
+    });
+
+    document.getElementById('copyCardBtn').addEventListener('click', async () => {
+        const cardNumber = document.getElementById('cardNumber').innerText.replace(/\s/g, '');
+        try {
+            await navigator.clipboard.writeText(cardNumber);
+            showMessage('✅ Номер карты скопирован!');
+        } catch (err) {
+            showMessage('❌ Не удалось скопировать', true);
+        }
+    });
+
+    document.getElementById('payBtn').addEventListener('click', () => {
+        const promo = document.getElementById('promoInput').value.trim();
+        
+        let planText = '';
+        if (currentPlan === 'week') planText = 'Неделя (199₽)';
+        else if (currentPlan === 'month') planText = 'Месяц (499₽)';
+        else if (currentPlan === 'forever') planText = 'Навсегда (999₽)';
+
+        if (tg) {
+            tg.sendData(JSON.stringify({
+                action: 'paid',
+                plan: currentPlan,
+                price: currentPrice,
+                promo: promo || null,
+                timestamp: Date.now()
+            }));
+            showMessage(`✅ Спасибо за оплату ${planText}! Пришлите скрин чека в поддержку.`);
+            tg.close();
+        } else {
+            showMessage(`✅ Демо: оплачен тариф ${planText}${promo ? ` (промокод: ${promo})` : ''}. В боте отправьте скрин.`);
+        }
+    });
+
+    document.getElementById('helpBtn').addEventListener('click', () => {
+        const helpText = "💳 Способы оплаты:\n• Карта Тинькофф: 2200 7019 7610 2084\n• Перевод по СБП\n• Telegram Stars\n\nПосле оплаты нажмите \"Я оплатил\" и пришлите скрин чека в поддержку, чтобы активировать мод.";
+        if (tg) {
+            tg.showPopup({
+                title: 'Помощь',
+                message: helpText,
+                buttons: [{type: 'ok'}]
+            });
+        } else {
+            alert(helpText);
+        }
+    });
+</script>
+</body>
+</html>
